@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UGG.Combat;
+using Unity.VisualScripting;
+
 namespace Enemy.Combat
 {
     public class AICombatSystem : CharacterCombatSystemBase
@@ -14,9 +17,14 @@ namespace Enemy.Combat
         [SerializeField , Header("目标")]
         private Transform currentTarget;
 
+        //动画
+        private int lockOnID = Animator.StringToHash("LockOn");
+        
         private void Update()
         {
             AIView();
+            LockOnTarget();
+            UpdateAnimation();
         }
 
 
@@ -43,6 +51,37 @@ namespace Enemy.Combat
             }
             
         }
+
+        private void LockOnTarget()
+        {
+            if (_animator.CheckAnimationTag("Motion") && currentTarget != null)
+            {
+                _animator.SetFloat(lockOnID , 1f);
+                transform.root.rotation = transform.LockOnTarget(currentTarget, transform.root.transform, 50f);
+            }
+
+            else
+            {
+                _animator.SetFloat(lockOnID, 0f);
+            }
+        }
+
+        public Transform GetCurrentTarget()
+        {
+            if (currentTarget == null) return null;
+            
+            return currentTarget;
+        }
+
+        private void UpdateAnimation()
+        {
+            if (_animator.CheckAnimationTag("Roll"))
+            {
+                _characterMovementBase.CharacterMoveInterface(transform.root.forward,
+                    _animator.GetFloat(animationMoveID), true);
+            }
+        }
         
+        public float GetCurrentTargetDistance() => Vector3.Distance(currentTarget.position, transform.root.position);
     }
 }
