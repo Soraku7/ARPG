@@ -39,6 +39,7 @@ namespace UGG.Move
         protected int horizontalID = Animator.StringToHash("Horizontal");
         protected int verticalID = Animator.StringToHash("Vertical");
         protected int runID = Animator.StringToHash("Run");
+        protected int RollID = Animator.StringToHash("Roll");
 
         protected virtual void Awake()
         {

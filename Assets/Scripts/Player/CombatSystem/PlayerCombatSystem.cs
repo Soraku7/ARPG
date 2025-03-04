@@ -28,11 +28,22 @@ namespace UGG.Combat
 
         private void PlayerAttackAction()
         {
-            if (_characterInputSystem.playerLAtk)
+            if (_characterInputSystem.playerRAtk)
             {
-                _animator.SetTrigger(lAtkID);
-                
+                if (_characterInputSystem.playerLAtk)
+                {
+                    _animator.SetTrigger(lAtkID); 
+                }
             }
+            else
+            {
+                if (_characterInputSystem.playerLAtk)
+                {
+                    _animator.SetTrigger(lAtkID);
+                } 
+            }
+            
+            _animator.SetBool(sWeaponID, _characterInputSystem.playerRAtk);
         }
 
 
@@ -42,7 +53,7 @@ namespace UGG.Combat
 
         private void ActionMotion()
         {
-            if (_animator.CheckAnimationTag("Attack"))
+            if (_animator.CheckAnimationTag("Attack") || _animator.CheckAnimationTag("GSAttack"))
             {
                 _characterMovementBase.CharacterMoveInterface(transform.forward,_animator.GetFloat(animationMoveID) * attackMoveMult,true);
             }
