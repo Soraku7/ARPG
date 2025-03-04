@@ -8,6 +8,9 @@ namespace UGG.Combat
     public class PlayerCombatSystem : CharacterCombatSystemBase
     {
         
+        [SerializeField]
+        private Transform _currentTarget;
+        
         //Speed
         [SerializeField, Header("攻击移动速度倍率"), Range(.1f, 10f)]
         private float attackMoveMult;
@@ -24,6 +27,12 @@ namespace UGG.Combat
             PlayerAttackAction();
             DetectionTarget();
             ActionMotion();
+            UpdateCurrentTarget();
+        }
+
+        private void LateUpdate()
+        {
+            OnAttackAutoLockOn();
         }
 
         private void PlayerAttackAction()
@@ -46,9 +55,18 @@ namespace UGG.Combat
             _animator.SetBool(sWeaponID, _characterInputSystem.playerRAtk);
         }
 
-
-
-
+        private void OnAttackAutoLockOn()
+        {
+            if (CanAttackLockOn())
+            {
+                if(_animator.CheckAnimationTag("Attack") || _animator.CheckAnimationTag("GSAttack"))
+                {
+                    transform.root.rotation = transform.LockOnTarget(_currentTarget , transform.root.transform  , 50f);
+                }
+            }
+        }
+        
+        
 
 
         private void ActionMotion()
@@ -67,7 +85,7 @@ namespace UGG.Combat
         /// <returns></returns>
         private bool CanAttackLockOn()
         {
-            if (_animator.CheckAnimationTag("Attack"))
+            if (_animator.CheckAnimationTag("Attack") || _animator.CheckAnimationTag("GSAttack"))
             {
                 if (_animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.75f)
                 {
@@ -82,10 +100,33 @@ namespace UGG.Combat
         {
             int targetCount = Physics.OverlapSphereNonAlloc(detectionCenter.position, detectionRang, detectionedTarget,
                 enemyLayer);
-            
-            //后续功能补充
+
+            if (targetCount > 0)
+            {
+                SetCurrentTarget(detectionedTarget[0].transform);
+            }
         }
-        
+
+
+        private void SetCurrentTarget(Transform target)
+        {
+            if(_currentTarget == null || _currentTarget != target)
+            {
+                _currentTarget = target;
+            }
+        }
+
+        private void UpdateCurrentTarget()
+        {
+            //玩家移动时不锁定敌人
+            if (_animator.CheckAnimationTag("Motion"))
+            {
+                if(_characterInputSystem.playerMovement.sqrMagnitude > 0)
+                {
+                    _currentTarget = null;
+                }
+            }
+        }
         #endregion
     }
 }
