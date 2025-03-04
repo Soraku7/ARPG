@@ -56,7 +56,7 @@ namespace UGG.Combat
                 {
                     if (attackDetectionTargets[i].TryGetComponent(out IDamagar damagar))
                     {
-                        damagar.TakeDamager(hitName);
+                        damagar.TakeDamager(0 , hitName , transform.root.transform);
                         
                     }
                 }
