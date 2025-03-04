@@ -35,9 +35,9 @@ public class GameSoundAssetsSO : ScriptableObject
             case SoundAssetsType.hit:
                 return assetsDictionary["Hit"][Random.Range(0, assetsDictionary["Hit"].Length)];
             case SoundAssetsType.swordWave:
-                return assetsDictionary["SwordWave"][Random.Range(0, assetsDictionary["Hit"].Length)];
+                return assetsDictionary["SwordWave"][Random.Range(0, assetsDictionary["SwordWave"].Length)];
             case SoundAssetsType.hSwordWave:
-                return assetsDictionary["HSwordWave"][Random.Range(0, assetsDictionary["Hit"].Length)];
+                return assetsDictionary["HSwordWave"][Random.Range(0, assetsDictionary["HSwordWave"].Length)];
             default:
                 Debug.Log("没找到");
                 return null;

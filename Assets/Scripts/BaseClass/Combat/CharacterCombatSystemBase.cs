@@ -44,7 +44,6 @@ namespace UGG.Combat
         /// <param name="hitName">传递受伤动画名</param>
         protected virtual void OnAnimationAttackEvent(string hitName)
         {
-            if(!_animator.CheckAnimationTag("Attack")) return;
 
             Collider[] attackDetectionTargets = new Collider[4];
 
@@ -62,9 +61,23 @@ namespace UGG.Combat
                     }
                 }
             }
-            GameAssets.Instance.PlaySoundEffect(_audioSource,SoundAssetsType.swordWave);
+
+            PlayWeaponEffect();
         }
 
+        private void PlayWeaponEffect()
+        {
+            if(_animator.CheckAnimationTag("Attack"))
+            {
+                GameAssets.Instance.PlaySoundEffect(_audioSource,SoundAssetsType.swordWave);
+            }
+            
+            if(_animator.CheckAnimationTag("GSAttack"))
+            {
+                GameAssets.Instance.PlaySoundEffect(_audioSource,SoundAssetsType.hSwordWave);
+            }
+        }
+        
         private void OnDrawGizmos()
         {
             Gizmos.DrawWireSphere(attackDetectionCenter.position, attackDetectionRang);
